@@ -1,18 +1,18 @@
 let jwt = require('jsonwebtoken');
 let secretKey = "secret-key"; 
-const generateToken = (user_info, callback) => {
+exports.generateToken = (user_info, callback) => {
     const { UserID, Name, UserType } = user_info; 
 
     let token = jwt.sign({
         UserID,
         Name,
         UserType, 
-    }, secretKey, { expiresIn: '1h' });
+    }, secretKey, { expiresIn: '2h' });
     
     return callback(token);
 }
 
-const validateToken = (req, res, next) => {
+exports.validateToken = (req, res, next) => {
     const authorizationHeader = req.header("Authorization");
 
     if (!authorizationHeader) {
@@ -37,5 +37,14 @@ const validateToken = (req, res, next) => {
     });
 };
 
-exports.generateToken = generateToken;
-exports.validateToken = validateToken;
+exports.isAdmin = (req, res, next) => {
+    const userType = req.userType;
+
+    if (userType !== 'admin') {
+        return res.status(403).json({ error: 'Access forbidden. Admin access required.' });
+    }
+
+    next();
+};
+
+

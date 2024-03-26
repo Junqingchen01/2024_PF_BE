@@ -19,11 +19,4 @@ Food.init({
 }, { sequelize, modelName: 'food' });
 
 
-
-sequelize.sync({ force: false }).then(() => {
-  console.log('synced table succeso。');
-}).catch(err => {
-  console.error('Error syncing table：', err);
-});
-
 module.exports = { sequelize, Food };

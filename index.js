@@ -38,18 +38,18 @@ app.use('/food', FoodRouter);
 const MenuRouter = require('./routes/MenuRouter');
 app.use('/menu', MenuRouter);
 
+const UserRouter = require('./routes/UserRouter');
+app.use('/user', UserRouter);
+app.use('/login', UserRouter);
 
-
-
-
-
-
-
-
-
-
-
-
+mysqlConn
+  .sync({ force: false }) 
+  .then(() => {
+    console.log("All database tables synchronized successfully.");
+  })
+  .catch((err) => {
+    console.error("Error synchronizing database tables:", err);
+  });
 
 app.listen(port, () => {
     console.log("App is running on port " + port);
@@ -63,4 +63,4 @@ app.listen(port, () => {
       });
   });
   
-  module.exports = app;
+module.exports = app;

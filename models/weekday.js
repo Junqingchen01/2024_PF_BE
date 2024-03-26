@@ -79,13 +79,9 @@ Menu.belongsTo(Weekday, { foreignKey: 'weekday_id' });
 Menu.hasMany(MenuItem, { foreignKey: 'menu_id' });
 MenuItem.belongsTo(Menu, { foreignKey: 'menu_id' });
 
-MenuItem.hasMany(Food, { foreignKey: 'food_id' });
+MenuItem.belongsTo(Food, { foreignKey: 'food_id' });
 Food.belongsTo(MenuItem, { foreignKey: 'food_id' });
 
-sequelize.sync({ force: false }).then(() => {
-  console.log('synced tables success.');
-}).catch(err => {
-  console.error('Error syncing tables:', err);
-});
+
 
 module.exports = { sequelize, Weekday, Menu, MenuItem };

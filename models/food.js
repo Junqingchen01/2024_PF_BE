@@ -20,7 +20,6 @@ Food.init({
 
 
 
-// 同步数据库模型
 sequelize.sync({ force: false }).then(() => {
   console.log('synced table succeso。');
 }).catch(err => {

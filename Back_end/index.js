@@ -42,6 +42,9 @@ const UserRouter = require('./routes/UserRouter');
 app.use('/user', UserRouter);
 app.use('/login', UserRouter);
 
+const OrderRouter = require('./routes/OrderRouter');
+app.use('/order', OrderRouter);
+
 mysqlConn
   .sync({ force: false }) 
   .then(() => {

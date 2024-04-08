@@ -1,4 +1,3 @@
-// models.js
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = require("../connections/mysql").sequelize;
 const { Food } = require('./food');

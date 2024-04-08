@@ -67,7 +67,7 @@ exports.createMenuByWeekday = async (req, res) => {
 
       const { menu_type, maximum_capacity } = req.body;
 
-      // verifica se o menu já existe
+      // verifica se o menu já existe para evidar o menu com igual menu_type
       const existingMenu = await Menu.findOne({ 
         where: { 
           menu_type,

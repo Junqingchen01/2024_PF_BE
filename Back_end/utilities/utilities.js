@@ -30,7 +30,7 @@ exports.validateToken = (req, res, next) => {
             return res.status(401).json({ error: "Invalid token." });
         }
 
-        req.userID = decoded.UserID;
+        req.UserID  = decoded.UserID;
         req.userName = decoded.Name;
         req.userType = decoded.UserType; 
         next();

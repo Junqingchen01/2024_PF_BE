@@ -102,7 +102,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { UserID } = req; 
-    const { name, email } = req.body; 
+    const { newname, newemail,newpassword,newavatar,newtel } = req.body; 
 
     const user = await User.findByPk(UserID);
     
@@ -110,8 +110,11 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    user.name = name || user.name; 
-    user.email = email || user.email; 
+    user.Name = newname || user.Name; 
+    user.Email = newemail || user.Email; 
+    user.Password = newpassword || user.Password;
+    user.Avatar = newavatar || user.Avatar;
+    user,Tel = newtel || user.Tel;
 
     await user.save();
 

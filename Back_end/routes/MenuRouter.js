@@ -4,9 +4,8 @@ const menuController = require('../controllers/menuController');
 const authenticateToken = require('../utilities/utilities');
 
 // menu routes
-router.get('/:type_day/', authenticateToken.validateToken,menuController.getMenuByWeekday);
-router.get('/:type_day/:menu_type', authenticateToken.validateToken,menuController.getMenuAndType);
-
+router.get('/:type_day/:menu_type', authenticateToken.validateToken,menuController.getMenubyType);
+router.get('/:type_day',authenticateToken.validateToken, menuController.getMenuByWeekday);
 
 router.post('/:type_day/create',
         authenticateToken.validateToken, 

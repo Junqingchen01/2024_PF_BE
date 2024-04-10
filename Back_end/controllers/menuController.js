@@ -4,7 +4,7 @@ const { Food } = require('../models/food.js');
 
 exports.getMenuByWeekday = async (req, res) => {
   try {
-    const { type_day, } = req.params;
+    const { type_day } = req.params;
     const weekday = await Weekday.findOne({ where: { type_day } });
 
     if (!weekday) {
@@ -22,7 +22,8 @@ exports.getMenuByWeekday = async (req, res) => {
   }
 };
 
-exports.getMenuAndType= async (req, res) => {
+
+exports.getMenubyType= async (req, res) => {
   try {
     const { type_day, menu_type } = req.params;
     const weekday = await Weekday.findOne({ where: { type_day } });

@@ -3,20 +3,15 @@ const router = express.Router();
 const menuController = require('../controllers/menuController');
 const authenticateToken = require('../utilities/utilities');
 
-
-
 // menu routes
 router.get('/:type_day/', authenticateToken.validateToken,menuController.getMenuByWeekday);
 router.get('/:type_day/:menu_type', authenticateToken.validateToken,menuController.getMenuAndType);
-
 
 
 router.post('/:type_day/create',
         authenticateToken.validateToken, 
         authenticateToken.isAdmin,  
         menuController.createMenuByWeekday);
-
-
 
 //menuitem routes
 router.post('/:menu_id/createMenuItem', 

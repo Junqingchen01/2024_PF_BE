@@ -1,5 +1,6 @@
 const { Order, Client, Meal } = require('../models/order.js');
 const { Food } = require('../models/food.js');
+const { User } = require('../models/user.js');
 
 exports.createOrder = async (req, res) => {
     try {
@@ -34,9 +35,10 @@ exports.createOrder = async (req, res) => {
 exports.getOrdersbyUser = async (req, res) => {
     try {
         const UserID = req.UserID;
+        const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID },
-            attributes: ['order_id', 'number_people', 'Date','Status'],
+            attributes: ['order_id', 'number_people', 'Date', 'Status'],
             include: [
                 {
                     model: Client,
@@ -56,11 +58,44 @@ exports.getOrdersbyUser = async (req, res) => {
                 }
             ]
         });
-        res.status(200).json(orders);
+        res.status(200).json({ user: user.Name, orders });
     } catch (error) {
         res.status(500).json({ error: 'Failed to get orders' });
     }
 };
+
+exports.getOrdersDonebyUser = async (req, res) => {
+    try {
+        const UserID = req.UserID;
+        const user = await User.findByPk(UserID, { attributes: ['Name'] });
+        const orders = await Order.findAll({
+            where: { UserID, Status: 'Done' },
+            attributes: ['order_id', 'number_people', 'Date', 'Status'],
+            include: [
+                {
+                    model: Client,
+                    attributes: ['name', 'indifferent'],
+                    include: [
+                        {
+                            model: Meal,
+                            attributes: ['food_id', 'observation'],
+                            include: [
+                                {
+                                    model: Food,
+                                    attributes: ['food_name', 'type']
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        res.status(200).json({ user: user.Name, orders });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get orders' });
+    }
+}
+
 
 exports.getOrderbyId = async (req, res) => {
     try {
@@ -79,7 +114,7 @@ exports.getOrderbyId = async (req, res) => {
                             include: [
                                 {
                                     model: Food,
-                                    attributes: ['food_id', 'food_name', 'type']
+                                    attributes: ['food_name', 'type']
                                 }
                             ]
                         }

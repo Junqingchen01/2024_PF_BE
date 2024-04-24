@@ -4,12 +4,9 @@ const { User } = require('../models/user.js');
 
 exports.createOrder = async (req, res) => {
     try {
-        const {number_people, contents } = req.body;
+        const {number_people, OrderDate, Horario, contents } = req.body;
         const UserID = req.UserID;
-        
-        const date = new Date(); 
-
-        const order = await Order.create({ UserID, number_people, Date: date }); 
+        const order = await Order.create({ UserID, number_people, OrderDate, Horario}); 
 
         for (const content of contents) {
             const client = await Client.create({ order_id: order.order_id, name: content.name, indifferent: content.indifferent });
@@ -28,9 +25,10 @@ exports.createOrder = async (req, res) => {
         }
         res.status(201).json(order);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to create order' });
+        res.status(500).json({ error: 'Failed to create order' ,error });
     }
 };
+
 
 exports.getOrdersbyUser = async (req, res) => {
     try {
@@ -38,7 +36,7 @@ exports.getOrdersbyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID },
-            attributes: ['order_id', 'number_people', 'Date', 'Status'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status'],
             include: [
                 {
                     model: Client,
@@ -70,7 +68,7 @@ exports.getOrdersDonebyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID, Status: 'Done' },
-            attributes: ['order_id', 'number_people', 'Date', 'Status'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status'],
             include: [
                 {
                     model: Client,
@@ -102,7 +100,7 @@ exports.getOrderbyId = async (req, res) => {
         const { order_id } = req.params;
         const order = await Order.findOne({
             where: { order_id },
-            attributes: ['order_id', 'number_people', 'Date', 'status'], 
+            attributes: ['order_id', 'number_people', 'OrderDate', 'status'], 
             include: [
                 {
                     model: Client,

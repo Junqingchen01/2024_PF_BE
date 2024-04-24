@@ -16,9 +16,11 @@ Order.init({
     type: DataTypes.ENUM('done', 'canceled', 'in_progress'),
     defaultValue: 'in_progress'
   },
-  Date: {
-    type: DataTypes.DATE,
-    defaultValue: Sequelize.NOW
+  OrderDate: {
+    type: DataTypes.ENUM('Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'),
+  },
+  Horario: {
+    type: DataTypes.ENUM('Almoço', 'Jantar'),
   }
 }, { sequelize, modelName: 'order' });
 

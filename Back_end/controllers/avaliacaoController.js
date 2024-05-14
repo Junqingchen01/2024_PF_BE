@@ -25,7 +25,7 @@ exports.createAvaliacao = async (req, res) => {
         }
 
         // Check if order is done
-        if (order.status !== 'done') {
+        if (order.status !== 'Done') {
             return res.status(400).json({ error: 'Order is not done' });
         }
         

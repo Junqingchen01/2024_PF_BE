@@ -6,6 +6,8 @@ const authenticateToken = require('../utilities/utilities');
 // menu routes
 router.get('/:type_day/:menu_type', authenticateToken.validateToken,menuController.getMenubyType);
 router.get('/:type_day',authenticateToken.validateToken, menuController.getMenuByWeekday);
+// get all menus
+router.get('/',authenticateToken.validateToken, menuController.getAllMenus);
 
 router.post('/:type_day/create',
         authenticateToken.validateToken, 
@@ -19,7 +21,7 @@ router.post('/:menu_id/createMenuItem',
         menuController.createMenuItemByMenuId);
 
 
-router.put('/:menu_id/updateMenuItemAfterOrder', menuController.updateMenuItemAfterOrder);
+router.put('/:type_day/:menu_type/updateMenuItemAfterOrder', menuController.updateMenuItemAfterOrder);
 
 
 module.exports = router;

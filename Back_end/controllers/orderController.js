@@ -36,7 +36,7 @@ exports.getOrdersbyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario'],
             include: [
                 {
                     model: Client,
@@ -68,7 +68,7 @@ exports.getOrdersDonebyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID, Status: 'Done' },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario'],
             include: [
                 {
                     model: Client,
@@ -100,7 +100,7 @@ exports.getOrderbyId = async (req, res) => {
         const { order_id } = req.params;
         const order = await Order.findOne({
             where: { order_id },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'status'], 
+            attributes: ['order_id', 'number_people', 'OrderDate', 'status', 'Horario'], 
             include: [
                 {
                     model: Client,

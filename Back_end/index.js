@@ -1,9 +1,12 @@
 const express = require("express");
 const { query, param, body, validationResult } = require("express-validator");
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const swaggerUi = require('swagger-ui-express');
 const swagerJsdoc = require('swagger-jsdoc');
+const cors = require('cors');
+
+app.use(cors());
 
 const options = {
   definition: {

@@ -102,7 +102,7 @@ exports.getAllUsers = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { UserID } = req; 
-    const { newname, newemail,newpassword,newavatar,newtel } = req.body; 
+    const { NewName,  NewEmail, NewPassword, NewAvatar, NewTel } = req.body; 
 
     const user = await User.findByPk(UserID);
     
@@ -110,11 +110,17 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    user.Name = newname || user.Name; 
-    user.Email = newemail || user.Email; 
-    user.Password = newpassword || user.Password;
-    user.Avatar = newavatar || user.Avatar;
-    user,Tel = newtel || user.Tel;
+    if(NewName || NewEmail || NewPassword || NewAvatar || NewTel) {
+      user.Name = NewName || user.Name; 
+      user.Email = NewEmail || user.Email; 
+      user.Password = NewPassword || user.Password;
+      user.Avatar = NewAvatar || user.Avatar;
+      user.Tel = NewTel || user.Tel;
+    }
+    else {
+      return res.status(400).json({ error: 'Erro when systeam check new information' });
+    }
+    
 
     await user.save();
 

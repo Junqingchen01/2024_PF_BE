@@ -1,5 +1,6 @@
 const { Weekday, Menu, MenuItem} = require('../models/weekday.js');
 const { Food } = require('../models/food.js');
+const { where } = require('sequelize');
 
 
 exports.getMenuByWeekday = async (req, res) => {
@@ -44,10 +45,14 @@ exports.getMenubyType= async (req, res) => {
         include: { 
           model: Food, 
           as: 'food', 
-          attributes: ['food_id','food_name'] 
+          attributes: ['food_id','food_name','type'] 
         } 
       } 
     });
+
+    if (!menus) {
+      return res.status(404).json({ error: 'Menu not found' });
+    }
        
     res.status(200).json({ data: menus });
   } catch (error) {
@@ -140,29 +145,52 @@ exports.createMenuItemByMenuId = async (req, res) => {
 
 exports.updateMenuItemAfterOrder = async (req, res) => {
   try {
-    const { menu_id } = req.params;
+    const { type_day, menu_type } = req.params;
+    const weekday = await Weekday.findOne({ where: { type_day } });
+
+    if (!weekday) {
+      return res.status(404).json({ error: 'Weekday not found for the given type_day' });
+    }
+
     const { numberOfPeople, orderedItems } = req.body;
 
-    // pesquisa menu
-    const menu = await Menu.findByPk(menu_id, { include: 'menuItems' });
+    const menu = await Menu.findOne({ 
+      where: { 
+        weekday_id: weekday.weekday_id,
+        menu_type 
+      },
+      include: { 
+        model: MenuItem, 
+        as: 'menuItems', 
+        include: { 
+          model: Food, 
+          as: 'food', 
+        } 
+      } 
+    });
+
     if (!menu) {
       return res.status(404).json({ error: 'Menu not found' });
     }
 
-    // atualiza a quantidade de itens de menu
     for (const orderedItem of orderedItems) {
-      const menuItem = menu.menuItems.find(item => item.food_id === orderedItem.food_id);
+      const menuItem = menu.menuItems.find(item => item.food.food_id === orderedItem.food_id);
       if (!menuItem) {
         return res.status(400).json({ error: `Menu item with food ID ${orderedItem.food_id} not found in menu` });
       }
-      // diminuir a quantidade de itens de menu
+      if (menuItem.quantity < orderedItem.quantity) {
+        return res.status(400).json({ error: `Insufficient quantity for menu item with food ID ${orderedItem.food_id}` });
+      }
       menuItem.quantity -= orderedItem.quantity;
-      await menuItem.save();
     }
 
-    // diminuir a capacidade máxima do menu
+    if (menu.maximum_capacity < numberOfPeople) {
+      return res.status(400).json({ error: 'Insufficient capacity for the number of people' });
+    }
     menu.maximum_capacity -= numberOfPeople;
+
     await menu.save();
+    await Promise.all(menu.menuItems.map(item => item.save()));
 
     res.status(200).json({ message: 'Menu updated successfully' });
   } catch (error) {
@@ -171,7 +199,27 @@ exports.updateMenuItemAfterOrder = async (req, res) => {
   }
 };
 
-
-
+exports.getAllMenus = async (req, res) => {
+  try {
+    const menus = await Menu.findAll({ 
+      include: [{ 
+        model: MenuItem, 
+        as: 'menuItems', 
+        attributes: ['quantity'],
+        include: { 
+          model: Food, 
+          as: 'food', 
+          attributes: ['food_id','food_name','type'] 
+        } 
+      }, { 
+        model: Weekday 
+      }] 
+    });
+    res.status(200).json({ data: menus });
+  } catch (error) {
+    console.error('Error getting all menus:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
   

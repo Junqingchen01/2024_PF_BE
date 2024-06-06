@@ -68,7 +68,19 @@ exports.register = async (req, res) => {
   
       const { Name, Email, Password, Avatar, Tel } = req.body;
       const hashedPassword = await bcrypt.hash(Password, 10);
-  
+      // check if user already exists
+      const userExists = await User.findOne({
+        where: {
+          [Op.or]: [
+            { Name },
+            { Email },
+          ]
+        },
+      });
+      if (userExists) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      
       const user = await User.create({
         Name,
         Email,
@@ -110,17 +122,15 @@ exports.updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    if(NewName || NewEmail || NewPassword || NewAvatar || NewTel) {
-      user.Name = NewName || user.Name; 
-      user.Email = NewEmail || user.Email; 
-      user.Password = NewPassword || user.Password;
-      user.Avatar = NewAvatar || user.Avatar;
-      user.Tel = NewTel || user.Tel;
+    if (NewPassword) {
+      const hashedPassword = await bcrypt.hash(NewPassword, 10);
+      user.Password = hashedPassword;
     }
-    else {
-      return res.status(400).json({ error: 'Erro when systeam check new information' });
-    }
-    
+
+    user.Name = NewName || user.Name; 
+    user.Email = NewEmail || user.Email; 
+    user.Avatar = NewAvatar || user.Avatar;
+    user.Tel = NewTel || user.Tel;
 
     await user.save();
 
@@ -130,4 +140,5 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 

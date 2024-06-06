@@ -9,11 +9,15 @@ router.post('/create', authenticateToken.validateToken, orderController.createOr
 
 router.get('/user/', authenticateToken.validateToken, orderController.getOrdersbyUser);
 router.get('/user/doneList', authenticateToken.validateToken, orderController.getOrdersDonebyUser);
-router.get('/:order_id', authenticateToken.validateToken, orderController.getOrderbyId);
+router.get('/orderid/:order_id', authenticateToken.validateToken, orderController.getOrderbyId);
 
-router.put('/:order_id', authenticateToken.validateToken, orderController.update);
+router.get('/all', authenticateToken.validateToken, orderController.getALL);
+
+router.put('/orderid/:order_id', authenticateToken.validateToken, orderController.update);
 
 router.delete('/:order_id', authenticateToken.validateToken, orderController.delete);
+
+
 
 
 

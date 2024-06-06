@@ -36,7 +36,7 @@ exports.getOrdersbyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
             include: [
                 {
                     model: Client,
@@ -68,7 +68,7 @@ exports.getOrdersDonebyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID, Status: 'Done' },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
             include: [
                 {
                     model: Client,
@@ -100,7 +100,7 @@ exports.getOrderbyId = async (req, res) => {
         const { order_id } = req.params;
         const order = await Order.findOne({
             where: { order_id },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'status', 'Horario'], 
+            attributes: ['order_id', 'number_people', 'OrderDate', 'status', 'Horario', 'avaliar', 'createdAt'], 
             include: [
                 {
                     model: Client,
@@ -134,16 +134,25 @@ exports.update = async (req, res) => {
     try {
         const { order_id } = req.params;
         const { status } = req.body;
+        const {avaliar } = req.body;
         const order = await Order.findByPk(order_id);
         if (!order) {
             return res.status(404).json({ error: 'Order not found' });
         }
-        await order.update({ status });
+        if(status){
+            await order.update({ status });
+        }
+        
+        if(avaliar){
+            await order.update({ avaliar });
+        }
+
         res.status(200).json(order);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update order' });
     }
 }
+
 
 exports.delete = async (req, res) => {
     try {
@@ -156,5 +165,34 @@ exports.delete = async (req, res) => {
         res.status(200).json({ message: 'Order deleted' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete order' });
+    }
+}
+
+exports.getALL = async (req, res) => {
+    try {
+        const orders = await Order.findAll({
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
+            include: [
+                {
+                    model: Client,
+                    attributes: ['name', 'indifferent'],
+                    include: [
+                        {
+                            model: Meal,
+                            attributes: ['food_id', 'observation'],
+                            include: [
+                                {
+                                    model: Food,
+                                    attributes: ['food_name', 'type']
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        });
+        res.status(200).json(orders);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to get orders' });
     }
 }

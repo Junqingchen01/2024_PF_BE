@@ -13,14 +13,25 @@ Order.init({
   UserID: DataTypes.INTEGER,
   number_people: DataTypes.INTEGER,
   status: {
-    type: DataTypes.ENUM('done', 'canceled', 'in_progress'),
-    defaultValue: 'in_progress'
+    type: DataTypes.ENUM('done', 'canceled'),
+    defaultValue: 'done'
   },
   OrderDate: {
-    type: DataTypes.ENUM('Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'),
+    type: DataTypes.ENUM('Segunda-feira', 'Terça-feira', 
+    'Quarta-feira', 'Quinta-feira', 'Sexta-feira'),
   },
   Horario: {
     type: DataTypes.ENUM('Almoço', 'Jantar'),
+  },
+
+  avaliar:{
+    type: DataTypes.STRING,
+    defaultValue: false,
+    validate: {
+      isIn: [[true, false]]
+      
+    }
+  
   }
 }, { sequelize, modelName: 'order' });
 
@@ -60,18 +71,22 @@ Avaliacao.init({
     autoIncrement: true
   },
   order_id: DataTypes.INTEGER,
+  // rating is a number in the range 1-5
   servicerating: {
-    type: DataTypes.ENUM('bom', 'normal', 'mal')
+    type: DataTypes.INTEGER,
+    isIn: [[1, 2, 3, 4, 5]]
   },
   temperatureRating: {
-    type: DataTypes.ENUM('bom', 'normal', 'mal')
+    type: DataTypes.INTEGER,
+    isIn: [[1, 2, 3, 4, 5]]
   },
   lightRating: {
-    type: DataTypes.ENUM('bom', 'normal', 'mal')
+    type: DataTypes.INTEGER,
+    isIn: [[1, 2, 3, 4, 5]]
   },
-  serviceObservation: DataTypes.STRING,
-  temperatureObservation: DataTypes.STRING,
-  lightObservation: DataTypes.STRING
+  Observation: DataTypes.STRING,
+  UserID: DataTypes.INTEGER,
+
 }, { sequelize, modelName: 'avaliacao' });
 
 //comentario para comidas
@@ -85,9 +100,9 @@ AvaliacaoFood.init({
   avaliacao_id: DataTypes.INTEGER,
   food_id: DataTypes.INTEGER,
   quantityRating: {
-    type: DataTypes.ENUM('bom', 'normal', 'mal')
+    type: DataTypes.INTEGER,
+    isIn: [[1, 2, 3, 4, 5]]
   },
-  content: DataTypes.TEXT
 }, { sequelize, modelName: 'avaliacaoFood' });
 
 User.hasMany(Order, { foreignKey: 'UserID' });

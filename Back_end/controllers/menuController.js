@@ -71,9 +71,10 @@ exports.createMenuByWeekday = async (req, res) => {
           return res.status(404).json({ error: 'Weekday not found' });
       }
 
-      const { menu_type, maximum_capacity } = req.body;
+      const { menu_type, maximum_capacity,isfixo } = req.body;
 
       // verifica se o menu já existe para evidar o menu com igual menu_type
+      // Menu_type é Jantar or Almoço
       const existingMenu = await Menu.findOne({ 
         where: { 
           menu_type,
@@ -88,6 +89,7 @@ exports.createMenuByWeekday = async (req, res) => {
           menu_type,
           maximum_capacity,
           weekday_id: weekday.weekday_id, 
+          isfixo
       });
 
       console.log('New menu created:', newMenu.toJSON());
@@ -101,7 +103,7 @@ exports.createMenuByWeekday = async (req, res) => {
 exports.createMenuItemByMenuId = async (req, res) => {
     try {
       const { menu_id } = req.params;
-      const { items } = req.body;
+      const { menuItems } = req.body;
       
       // verifica se o menu existe
       const menu = await Menu.findByPk(menu_id);
@@ -114,7 +116,7 @@ exports.createMenuItemByMenuId = async (req, res) => {
   
       // criar novos itens de menu
       const createdItems = [];
-      for (const item of items) {
+      for (const item of menuItems) {
         const { food_id, quantity } = item;
         // verifica se a comida existe
         const food = await Food.findByPk(food_id);
@@ -223,3 +225,64 @@ exports.getAllMenus = async (req, res) => {
 };
 
   
+exports.getMenuById = async (req, res) => {
+  try {
+    const { menu_id } = req.params;
+    const menu = await Menu.findByPk(menu_id, { 
+      include: [{ 
+        model: MenuItem, 
+        as: 'menuItems', 
+        attributes: ['quantity'],
+        include: { 
+          model: Food, 
+          as: 'food', 
+          attributes: ['food_id','food_name','type'] 
+        } 
+      }, { 
+        model: Weekday 
+      }] 
+    });
+
+    if (!menu) {
+      return res.status(404).json({ error: 'Menu not found' });
+    }
+
+    res.status(200).json({ data: menu });
+  } catch (error) {
+    console.error('Error getting menu by id:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+// update menu lunch or dinner time
+exports.updateMenuTime = async (req, res) => {
+  try {
+    const { menu_id } = req.params;
+    const { lunch_start_time, lunch_end_time, dinner_start_time, dinner_end_time } = req.body;
+
+    const menu = await Menu.findByPk(menu_id);
+    if (!menu) {
+      return res.status(404).json({ error: 'Menu not found' });
+    }
+
+    if (lunch_start_time) {
+      menu.lunch_start_time = lunch_start_time;
+    }
+    if (lunch_end_time) {
+      menu.lunch_end_time = lunch_end_time;
+    }
+    if (dinner_start_time) {
+      menu.dinner_start_time = dinner_start_time;
+    }
+    if (dinner_end_time) {
+      menu.dinner_end_time = dinner_end_time;
+    }
+
+    await menu.save();
+    res.status(200).json({ message: 'Menu updated successfully' });
+  } catch (error) {
+    console.error('Error updating menu time:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}

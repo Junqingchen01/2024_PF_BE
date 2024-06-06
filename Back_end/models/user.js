@@ -25,7 +25,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    Avatar: DataTypes.STRING,
+    Avatar: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'https://static.vecteezy.com/system/resources/thumbnails/008/442/086/small_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg',
+    },
     Tel: DataTypes.STRING,
     UserType: {
       type: DataTypes.STRING,

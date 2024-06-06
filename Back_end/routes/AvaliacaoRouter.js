@@ -8,6 +8,9 @@ const authenticateToken = require('../utilities/utilities');
 router.post('/:order_id', authenticateToken.validateToken, avaliacaoController.createAvaliacao);
 
 router.get('/list', authenticateToken.validateToken, avaliacaoController.getAllAvaliacao);
+router.get('/MyList', authenticateToken.validateToken, avaliacaoController.getMyAvaliacao);
+router.get('/:avaliacao_id', authenticateToken.validateToken, authenticateToken.isAdmin,avaliacaoController.getAvaliacaoByID);
 
+router.delete('/:avaliacao_id', authenticateToken.validateToken, avaliacaoController.delectmyAvaliacao);
 
 module.exports = router;

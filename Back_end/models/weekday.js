@@ -19,14 +19,11 @@ Weekday.init({
   type_day: {
     type: DataTypes.STRING(10),
     validate: {
-      isIn: [[ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']]
+      isIn: [[ 'monday', 'tuesday', 
+      'wednesday', 'thursday', 'friday']]
     },
     defaultValue: Weekday.getCurrentWeekday() 
   },
-  lunch_start_time: DataTypes.TIME,
-  lunch_end_time: DataTypes.TIME,
-  dinner_start_time: DataTypes.TIME,
-  dinner_end_time: DataTypes.TIME 
   }, { sequelize, modelName: 'weekday' });
 
 class Menu extends Model {}
@@ -49,7 +46,19 @@ Menu.init({
       isIn: [['Almoço', 'Jantar']]
     }
   },
-  maximum_capacity: DataTypes.INTEGER
+  maximum_capacity: DataTypes.INTEGER,
+  lunch_start_time: DataTypes.TIME,
+  lunch_end_time: DataTypes.TIME,
+  dinner_start_time: DataTypes.TIME,
+  dinner_end_time: DataTypes.TIME,
+  disponivel:{
+    type: DataTypes.STRING,
+    defaultValue: 'true',
+    validate: {
+      isIn: [['true', 'false']]
+    
+    }
+  }
 }, { sequelize, modelName: 'menu' });
 
 class MenuItem extends Model {}

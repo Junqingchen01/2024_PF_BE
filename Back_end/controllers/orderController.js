@@ -36,7 +36,7 @@ exports.getOrdersbyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt', 'isAvaliado'],
             include: [
                 {
                     model: Client,
@@ -68,7 +68,7 @@ exports.getOrdersDonebyUser = async (req, res) => {
         const user = await User.findByPk(UserID, { attributes: ['Name'] });
         const orders = await Order.findAll({
             where: { UserID, Status: 'Done' },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt', 'isAvaliado'],
             include: [
                 {
                     model: Client,
@@ -100,7 +100,7 @@ exports.getOrderbyId = async (req, res) => {
         const { order_id } = req.params;
         const order = await Order.findOne({
             where: { order_id },
-            attributes: ['order_id', 'number_people', 'OrderDate', 'status', 'Horario', 'avaliar', 'createdAt'], 
+            attributes: ['order_id', 'number_people', 'OrderDate', 'status', 'Horario', 'avaliar', 'createdAt', 'isAvaliado'], 
             include: [
                 {
                     model: Client,
@@ -134,7 +134,8 @@ exports.update = async (req, res) => {
     try {
         const { order_id } = req.params;
         const { status } = req.body;
-        const {avaliar } = req.body;
+        const {avaliar} = req.body;
+        const {isAvaliado} = req.body;
         const order = await Order.findByPk(order_id);
         if (!order) {
             return res.status(404).json({ error: 'Order not found' });
@@ -146,7 +147,9 @@ exports.update = async (req, res) => {
         if(avaliar){
             await order.update({ avaliar });
         }
-
+        if(isAvaliado){
+            await order.update({ isAvaliado });
+        }
         res.status(200).json(order);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update order' });
@@ -171,7 +174,7 @@ exports.delete = async (req, res) => {
 exports.getALL = async (req, res) => {
     try {
         const orders = await Order.findAll({
-            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt'],
+            attributes: ['order_id', 'number_people', 'OrderDate', 'Status', 'Horario','avaliar', 'createdAt', 'isAvaliado'],
             include: [
                 {
                     model: Client,

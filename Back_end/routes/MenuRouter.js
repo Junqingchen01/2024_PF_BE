@@ -7,8 +7,8 @@ const authenticateToken = require('../utilities/utilities');
 router.get('/menuid/:menu_id', authenticateToken.validateToken, menuController.getMenuById);
 
 // menu routes
-router.get('/:type_day/:menu_type', authenticateToken.validateToken, menuController.getMenubyType);
-router.get('/:type_day', authenticateToken.validateToken, menuController.getMenuByWeekday);
+router.get('/:type_day/:menu_type', menuController.getMenubyType);
+router.get('/:type_day', menuController.getMenuByWeekday);
 
 router.put('/menuid/:menu_id/updateMenuTime', menuController.updateMenuTime);
 

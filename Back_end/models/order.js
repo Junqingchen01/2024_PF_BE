@@ -29,10 +29,15 @@ Order.init({
     defaultValue: false,
     validate: {
       isIn: [[true, false]]
-      
     }
-  
-  }
+  },
+  isAvaliado:{
+    type: DataTypes.STRING,
+    defaultValue: false,
+    validate: {
+      isIn: [[true, false]]
+    }
+  },
 }, { sequelize, modelName: 'order' });
 
 // os clientes 

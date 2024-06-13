@@ -9,6 +9,8 @@ router.post('/register', userController.register);
 
 router.get('/', authenticateToken.validateToken, authenticateToken.isAdmin, userController.getAllUsers);
 
+router.get('/:UserID', authenticateToken.validateToken, userController.getUserbyID);
+
 router.put('/updateuser', authenticateToken.validateToken, userController.updateUser);
 
 module.exports = router;

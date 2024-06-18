@@ -27,7 +27,7 @@ app.use(express.json());
 
 // Information home page
 app.get('/home', function (req, res) {
-  res.status(200).json({message:'Home page! Welcome to ESHT restaurante API!'});
+  res.status(200).json({message:'Home page! Welcome to ESHT restaurante API! Once you see this message, the API is working!'});
 });
 
 

@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const WeekdayController = require('../controllers/WeekdayController');
-
+const WeekdayController = require('../controllers/weekdayController.js');
 // weekday routes
 router.get('/', WeekdayController.getallWeekdays);
 router.post('/create', WeekdayController.createWeekday);

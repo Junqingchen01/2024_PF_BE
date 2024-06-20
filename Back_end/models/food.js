@@ -8,8 +8,11 @@ Food.init({
     primaryKey: true,
     autoIncrement: true
   },
+
   food_name: DataTypes.STRING(100),
+
   description: DataTypes.TEXT,
+  
   type: {
     type: DataTypes.STRING(20),
     validate: {

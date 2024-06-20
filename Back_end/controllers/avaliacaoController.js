@@ -63,8 +63,13 @@ exports.getAllAvaliacao = async (req, res) => {
         const avaliacoes = await Avaliacao.findAll({
             include: {
                 model: AvaliacaoFood,
-                attributes: ['food_id', 'quantityRating']
+                attributes: ['food_id', 'quantityRating'],
+                include: {
+                    model: Food,
+                    attributes: ['food_id', 'food_name']
+                }
             }
+            
         }); 
         res.status(200).json(avaliacoes);
     } catch (error) {
@@ -80,7 +85,11 @@ exports.getMyAvaliacao = async (req, res) => {
             where: { UserID },
             include: {
                 model: AvaliacaoFood,
-                attributes: ['food_id', 'quantityRating']
+                attributes: ['food_id', 'quantityRating'],
+                include: {
+                    model: Food,
+                    attributes: ['food_id', 'food_name']
+                }
             }
         });
         res.status(200).json(avaliacoes);
@@ -96,7 +105,11 @@ exports.getAvaliacaoByID = async (req, res) => {
         const avaliacao = await Avaliacao.findByPk(avaliacao_id, {
             include: {
                 model: AvaliacaoFood,
-                attributes: ['food_id', 'quantityRating']
+                attributes: ['food_id', 'quantityRating'],
+                include: {
+                    model: Food,
+                    attributes: ['food_id', 'food_name']
+                }
             }
         });
         if (!avaliacao) {

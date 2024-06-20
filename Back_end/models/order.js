@@ -23,7 +23,6 @@ Order.init({
   Horario: {
     type: DataTypes.ENUM('Almoço', 'Jantar'),
   },
-
   avaliar:{
     type: DataTypes.STRING,
     defaultValue: false,
@@ -119,8 +118,12 @@ Client.belongsTo(Order, { foreignKey: 'order_id' });
 Order.hasOne(Avaliacao, { foreignKey: 'order_id' });
 Avaliacao.belongsTo(Order, { foreignKey: 'order_id' });
 
+
 Avaliacao.hasMany(AvaliacaoFood, { foreignKey: 'avaliacao_id' });
 AvaliacaoFood.belongsTo(Avaliacao, { foreignKey: 'avaliacao_id' });
+
+AvaliacaoFood.belongsTo(Food, { foreignKey: 'food_id' });
+Food.hasMany(AvaliacaoFood, { foreignKey: 'food_id' });
 
 Client.hasMany(Meal, { foreignKey: 'client_id' });
 Meal.belongsTo(Client, { foreignKey: 'client_id' });

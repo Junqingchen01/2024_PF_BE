@@ -42,7 +42,6 @@ exports.login = async (req, res) => {
             UserType: user.UserType,
             Avatar: user.Avatar,
             Tel: user.Tel,
-
           }
         });
       } else {
@@ -65,7 +64,7 @@ exports.register = async (req, res) => {
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
       }
-  
+
       const { Name, Email, Password, Avatar, Tel } = req.body;
       const hashedPassword = await bcrypt.hash(Password, 10);
       // check if user already exists
@@ -80,16 +79,9 @@ exports.register = async (req, res) => {
       if (userExists) {
         return res.status(400).json({ message: "User already exists" });
       }
-      
       const user = await User.create({
-        Name,
-        Email,
-        Password: hashedPassword,
-        Avatar,
-        Tel,
-        
+        Name, Email,Password: hashedPassword,Avatar,Tel,
       });
-  
       res.status(201).json(user);
     } catch (error) {
       console.error("Error during registration:", error);
